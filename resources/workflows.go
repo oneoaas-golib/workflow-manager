@@ -38,7 +38,7 @@ func NewWorkflow(wf WorkflowDefinition, input []string, namespace string, queue 
 		Status:             Queued,
 		CreatedAt:          time.Now(),
 		Namespace:          namespace,
-		Queue:              queue, // @todo or from namespace?
+		Queue:              queue, // @todo or from namespace? at what stage?
 	}
 }
 
