@@ -153,7 +153,7 @@ func SaveWorkflow(s store.Store, t *testing.T) func(t *testing.T) {
 	return func(t *testing.T) {
 		wf := resources.KitchenSinkWorkflowDefinition(t)
 		require.Nil(t, s.SaveWorkflowDefinition(wf))
-		workflow := resources.NewWorkflow(wf, []string{"input"})
+		workflow := resources.NewWorkflow(wf, []string{"input"}, "namespace", "queue")
 		require.Nil(t, s.SaveWorkflow(*workflow))
 		// TODO: test behavior when workflow is invalid, e.g. breaks a length limit on a field / array
 	}
