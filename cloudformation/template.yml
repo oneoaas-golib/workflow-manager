@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: AWS resources for Workflow Manager
+Parameters:
+  ECSClusterARN:
+    Type: String
+    MinLength : 1
+    Description: ARN of the ECS cluster used with Batch.
+Resources:
+  SQSQueue:
+    Type: AWS::SQS::Queue
+    Properties: {}
+  CloudWatchEventsRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: CW Events rule to forward ECS events to SQS
+      EventPattern:
+        source:
+        - aws.ecs
+        detail-type:
+        - ECS Task State Change
+        - ECS Container Instance State Change
+        detail:
+          clusterArn:
+          - Ref: ECSClusterARN
+      Targets:
+        - Id: sqs-target
+          Arn:
+            Fn::GetAtt:
+            - SQSQueue
+            - Arn
+  SQSQueuePolicy:
+    # in order for CW events to publish to the queue, need to use resource policy
+    #http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/resource-based-policies-cwe.html
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+      - Ref: SQSQueue
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: TrustCWEToSendEventsToQueue
+          Effect: Allow
+          Principal: "*"
+          Action: SQS:SendMessage
+          Resource:
+            Fn::GetAtt:
+            - SQSQueue
+            - Arn
+          Condition:
+            ArnEquals:
+              aws:SourceArn:
+                Fn::GetAtt:
+                - CloudWatchEventsRule
+                - Arn
+Outputs:
+  SQSQueueURL:
+    Description: SQS Queue URL that will receive ECS cluster events
+    Value:
+      Ref: SQSQueue
+  SQSQueueARN:
+    Description: SQS Queue URL that will receive ECS cluster events
+    Value:
+      Fn::GetAtt:
+      - SQSQueue
+      - Arn
