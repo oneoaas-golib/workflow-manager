@@ -38,9 +38,11 @@ func EncodeWorkflow(workflow resources.Workflow) (map[string]*dynamodb.Attribute
 			Name:    workflow.WorkflowDefinition.Name(),
 			Version: workflow.WorkflowDefinition.Version(),
 		},
-		Input:  workflow.Input,
-		Jobs:   workflow.Jobs,
-		Status: workflow.Status,
+		Input:     workflow.Input,
+		Jobs:      workflow.Jobs,
+		Status:    workflow.Status,
+		Namespace: workflow.Namespace,
+		Queue:     workflow.Queue,
 	})
 }
 
