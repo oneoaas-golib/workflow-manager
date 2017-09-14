@@ -125,6 +125,7 @@ paths:
             $ref: "#/definitions/WorkflowDefinition"
         404:
           $ref: "#/responses/NotFound"
+
   /workflows:
     post:
       summary: Start a Workflow
@@ -136,7 +137,7 @@ paths:
             $ref: "#/definitions/StartWorkflowParams"
       responses:
         200:
-          description: Responds with Workflow Id and Name
+          description: Responds with Workflow details including Id, Status, Jobs, Input, Namespace, and WorkflowDefinition
           schema:
             $ref: "#/definitions/Workflow"
         404:
