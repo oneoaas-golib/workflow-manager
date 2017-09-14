@@ -20,6 +20,8 @@ type ddbWorkflow struct {
 	Input              []string                        `dynamodbav:"input"`
 	Jobs               []*resources.Job                `dynamodbav:"jobs"`
 	Status             resources.WorkflowStatus        `dynamodbav:"status"`
+	Namespace          string                          `dynamodbav:"namespace"`
+	Queue              string                          `dynamodbav:"queue"`
 }
 
 // EncodeWorkflow encodes a Workflow as a dynamo attribute map.
